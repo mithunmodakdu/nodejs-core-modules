@@ -24,13 +24,23 @@ const productController = async (req: IncomingMessage, res: ServerResponse) => {
   } else if (method === "GET" && id !== null) {
     const products = productService();
     const product = products.find((p: IProduct) => p.id === id);
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(
-      JSON.stringify({
-        message: "Product retrieved successfully.",
-        data: product,
-      }),
-    );
+
+    if (!product) {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          message: "Product Not Found",
+        }),
+      );
+    } else {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          message: "Product retrieved successfully.",
+          data: product,
+        }),
+      );
+    }
   } else if (method === "POST" && url === "/products") {
     const body = await bodyParser(req);
     const newProduct = {
@@ -53,7 +63,7 @@ const productController = async (req: IncomingMessage, res: ServerResponse) => {
     const products: IProduct[] = productService();
     const body = await bodyParser(req);
     const index = products.findIndex((p: IProduct) => p.id === id);
-    
+
     if (index < 0) {
       res.writeHead(404, { "Content-Type": "application/json" });
       res.end(
@@ -65,8 +75,8 @@ const productController = async (req: IncomingMessage, res: ServerResponse) => {
 
     products[index] = {
       id: products[index]?.id,
-      ...body
-    }
+      ...body,
+    };
 
     createProduct(products);
 
@@ -74,7 +84,33 @@ const productController = async (req: IncomingMessage, res: ServerResponse) => {
     res.end(
       JSON.stringify({
         message: "Product updated successfully.",
-        data: products[index]
+        data: products[index],
+      }),
+    );
+  } else if (method === "DELETE" && id !== null) {
+    const products = productService();
+    const index = products.findIndex((p: IProduct) => p.id === id);
+
+    if (index < 0) {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          message: "Product Not Found",
+        }),
+      );
+    }
+
+    // const arr = ["a", "b", "c"]
+    // console.log(arr.splice(2, 1))
+    // console.log(arr)
+
+    products.splice(index, 1);
+    createProduct(products);
+
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify({
+        message: "Product deleted successfully.",
       }),
     );
   }
