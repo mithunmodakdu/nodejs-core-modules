@@ -38,5 +38,21 @@
     "price": 349,
     "stock": 30,
     "rating": 4.6
+  },
+  {
+    "id": 1794643825322,
+    "name": "Samsung Galaxy S25",
+    "category": "Electronics",
+    "price": 899,
+    "stock": 15,
+    "rating": 4.7
+  },
+  {
+    "id": 1794644016786,
+    "name": "Samsung Galaxy S26",
+    "category": "Electronics",
+    "price": 899,
+    "stock": 15,
+    "rating": 4.7
   }
 ]
